@@ -4,10 +4,22 @@ import morgan from "morgan";
 import helmet from 'helmet';
 import compression from 'compression';
 import cors from 'cors';
+import { config as dotenv } from "dotenv";
+import Knex from 'knex';
+import knexConfig from '../knexfile';
+import { Model } from 'objection';
+
+// Initialize knex.
+const knex = Knex(knexConfig.development)
+
+// Bind all Models to a knex instance. If you only have one database in
+// your server this is all you have to do. For multi database systems, see
+// the Model.bindKnex() method.
+Model.knex(knex)
 
 //route
 import UserRoutes from "./routers/User";
-
+import AuthRoutes from "./routers/AuthRoutes";
 
 class App {
     public app: Application;
@@ -16,6 +28,7 @@ class App {
         this.app = express();
         this.plugins();
         this.routes();
+        dotenv();
     }
 
     protected plugins(): void {
@@ -31,11 +44,11 @@ class App {
 
     protected routes(): void {
         this.app.route("/").get((req: Request, res: Response) => {
-            res.send("ini route type script")
+            res.send("hallo")
         });
 
-        this.app.use("/api/v1/users", UserRoutes)
-
+        this.app.use("/api/v1/users", UserRoutes);
+        this.app.use("/api/v1/auth", AuthRoutes);
     }
 }
 
