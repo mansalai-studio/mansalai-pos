@@ -25,5 +25,5 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: npm ci
-    - run: npm run tsc --if-present
+    - run: npm run tsc
     - run: npm test --if-present
