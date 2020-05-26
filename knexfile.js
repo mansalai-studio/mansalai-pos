@@ -8,7 +8,8 @@ module.exports = {
     connection: process.env.DEV_DATABASE_URL,
     pool: { min: 0, max: 3 }, //Menggunakan fungsi pool agar menjaga koneksi ke DB tetep tersambung
     migrations: {
-        tableName: 'knex_migrations'
+        tableName: 'knex_migrations',
+        directory: "./database/migrations"
     }
   },
 

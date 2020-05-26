@@ -1,4 +1,5 @@
 import express, { Application, Request, Response } from "express";
+import * as ExpressSession from "express-session";
 import bodyParser from "body-parser";
 import morgan from "morgan";
 import helmet from 'helmet';
@@ -8,6 +9,7 @@ import { config as dotenv } from "dotenv";
 import Knex from 'knex';
 import knexConfig from '../knexfile';
 import { Model } from 'objection';
+import layouts from "express-ejs-layouts";
 
 // Initialize knex.
 const knex = Knex(knexConfig.development)
@@ -17,9 +19,15 @@ const knex = Knex(knexConfig.development)
 // the Model.bindKnex() method.
 Model.knex(knex)
 
+//session secret
+const SESSION_SECRET = process.env.SESSION_SECRET;
+
 //route
 import UserRoutes from "./routers/User";
 import AuthRoutes from "./routers/AuthRoutes";
+import WebRoutes from "./routers/WebRoutes";
+
+import { checkLogin } from "./middlewares/AuthMiddleware";
 
 class App {
     public app: Application;
@@ -40,13 +48,33 @@ class App {
         this.app.use(compression())
         this.app.use(helmet());
         this.app.use(cors());
+        this.app.use(express.static('public'));
+        this.app.set('view engine', 'ejs');
+        this.app.use(layouts);
+
+        //sessionS
+        this.app.use(
+            require('express-session')({
+                name: 'sid',
+                resave: false,
+                saveUninitialized: false,
+                secret: SESSION_SECRET,
+                cookie: {
+                    maxAge: 1000 * 60 * 60 * 2,
+                    sameSite: true,
+                    secure: false
+                }
+            })
+        );
     }
 
     protected routes(): void {
-        this.app.route("/").get((req: Request, res: Response) => {
-            res.send("hallo")
-        });
+        this.app.route("/").get(checkLogin);
 
+        //web route
+        this.app.use("/app", WebRoutes);
+
+        //api route
         this.app.use("/api/v1/users", UserRoutes);
         this.app.use("/api/v1/auth", AuthRoutes);
     }

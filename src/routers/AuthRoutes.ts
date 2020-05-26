@@ -1,4 +1,5 @@
 import BaseRoutes from "./BaseRoutes";
+import validate from "../middlewares/AuthValidator";
 
 // Controllers
 import AuthController from "../controllers/AuthController";
