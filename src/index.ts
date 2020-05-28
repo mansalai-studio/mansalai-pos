@@ -22,9 +22,11 @@ Model.knex(knex)
 //session secret
 const SESSION_SECRET = process.env.SESSION_SECRET;
 
-//route
+//api route
 import UserRoutes from "./routers/User";
 import AuthRoutes from "./routers/AuthRoutes";
+import CategoryRoutes from './routers/CategoryRoutes';
+
 import WebRoutes from "./routers/WebRoutes";
 
 import { checkLogin } from "./middlewares/AuthMiddleware";
@@ -77,6 +79,7 @@ class App {
         //api route
         this.app.use("/api/v1/users", UserRoutes);
         this.app.use("/api/v1/auth", AuthRoutes);
+        this.app.use("/api/v1/category", CategoryRoutes);
     }
 }
 
