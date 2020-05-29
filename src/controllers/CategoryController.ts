@@ -9,7 +9,7 @@ class CategoryController implements IController{
             const service: CategoryService = new CategoryService();
             const categories = await service.getAll(req)
             
-            return res.send({ data: categories });
+            return res.send(categories);
         } catch (error) {
             return res.send(error.message)
         }

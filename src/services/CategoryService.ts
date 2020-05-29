@@ -8,7 +8,7 @@ class CategoryService {
   getAll = async (req: Request) => {
     const repository: CategoryRepository = new CategoryRepository(req);
     const results = await repository.all()
-
+  
     return results;
   }
 
