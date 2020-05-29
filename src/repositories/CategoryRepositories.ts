@@ -48,19 +48,9 @@ class CategoryRepository {
     }
 
     resultPaginate.data = await Category.query().page(startIndex, limit);
-    console.log(resultPaginate.data)
+    
     return resultPaginate;
-    // try {
-    //     // const resultsPaginate.results = await Category.query().page(startIndex, 10);
-    //     // model.find().limit(limit).skip(startIndex).exec()
-        
-    //     return resultPaginate;
-    // } catch (e) {
-    //     return e.message
-    // }
-    // const results = await Category.query();
-
-    // return results;
+    
   }
 
   insert = async () => {
