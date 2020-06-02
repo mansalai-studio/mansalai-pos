@@ -1,14 +1,17 @@
 import { Request, Response } from "express";
-import PasswordHash from "../utils/PasswordHash";
+import Authentication from "../utils/Authentication";
 import bcrypt from "bcrypt";
 //models
 import User from "../models/user";
+
+//service
+import UserService from "../services/UserService";
 
 class AuthController {
     register = async(req: Request, res: Response): Promise<Response> => {
         try {
             let { username, password } = req.body;
-            const hashedPassword: string = await PasswordHash.hash(password);
+            const hashedPassword: string = await Authentication.passwordHash(password);
 
             const createdUser = await User.query().insert({ username, password: hashedPassword });
            
@@ -19,8 +22,15 @@ class AuthController {
         
     }
 
-    login = (req: Request, res: Response): void => {
-        //
+    login = async (req: Request, res: Response): Promise<Response> => {
+        try {
+            const service: UserService = new UserService();
+            const user = await service.findByUsername(req)
+            
+            return res.send(user);
+        } catch (error) {
+            return res.send(error.message)
+        }
     }
 
     logout = (req: Request, res: Response): void => {
